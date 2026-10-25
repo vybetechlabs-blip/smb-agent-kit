@@ -1,0 +1,26 @@
+# Secrets (never committed; keys are read from the environment)
+.env
+.env.*
+!.env.example
+.dev.vars
+*.keystore
+*.jks
+key.properties
+
+# Local state
+*.db
+*.db-journal
+outbox/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+dist/
+*.egg-info/
+.ruff_cache/
+.pytest_cache/
+
+# OS / editor
+.DS_Store
+Thumbs.db

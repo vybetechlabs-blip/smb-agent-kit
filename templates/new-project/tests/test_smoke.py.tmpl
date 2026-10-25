@@ -1,0 +1,48 @@
+"""Stub tests from the generator: the kit is installed and the approval gate holds."""
+
+from dataclasses import dataclass, field
+from pathlib import Path
+
+import pytest
+from pydantic import BaseModel
+from smb_agent_kit.approval import NotSendable
+from smb_agent_kit.config import load_yaml, require_fictional
+from smb_agent_kit.delivery import DryRunSender
+from smb_agent_kit.llm import ScriptedLLM, structured_output
+
+from {{package}}.cli import Queue
+
+ROOT = Path(__file__).resolve().parent.parent
+
+
+@dataclass
+class Draft:
+    kind: str = "reply"
+    to: str | None = "someone@example.com"
+    subject: str = "Subject"
+    body: str = "Body"
+    reasons: list[str] = field(default_factory=list)
+    payload_json: str | None = None
+
+
+def test_business_config_is_marked_fictional():
+    path = ROOT / "business" / "business.yaml"
+    assert require_fictional(load_yaml(path), path)["fictional"] is True
+
+
+def test_a_draft_that_is_not_approved_is_not_sent(tmp_path):
+    queue = Queue(tmp_path / "q.db")
+    queue.ingest_item("i1", "{}", "{}", Draft(), "stub")
+    with pytest.raises(NotSendable):
+        queue.send("i1", DryRunSender(tmp_path / "outbox"), "replies@example.com")
+    queue.close()
+
+
+def test_scripted_llm_gives_structured_output():
+    class Reply(BaseModel):
+        answer: str
+
+    parsed, _call, failure = structured_output(
+        ScriptedLLM(['{"answer": "yes"}']), "sys", "hi", {"type": "object"}, Reply
+    )
+    assert parsed == Reply(answer="yes") and failure is None

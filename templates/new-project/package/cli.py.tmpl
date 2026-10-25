@@ -1,0 +1,49 @@
+"""{{name}} command line. The approval verbs come from smb-agent-kit."""
+
+from __future__ import annotations
+
+from pathlib import Path
+
+import typer
+from smb_agent_kit.approval import ApprovalQueue
+from smb_agent_kit.cli import add_approval_commands
+from smb_agent_kit.config import load_yaml, require_fictional
+from smb_agent_kit.delivery import make_sender
+
+ROOT = Path(__file__).resolve().parent.parent
+app = typer.Typer(add_completion=False, no_args_is_help=True, help=__doc__)
+
+
+class State:
+    db: Path
+
+
+state = State()
+
+
+class Queue(ApprovalQueue):
+    noun = "item"  # <<FILL: what one item is, for messages>>
+
+
+@app.callback()
+def options(
+    db: Path = typer.Option(Path("{{name}}.db"), envvar="{{env_prefix}}_DB", help="Queue file."),
+) -> None:
+    state.db = db
+
+
+def reply_from() -> str:
+    business = ROOT / "business" / "business.yaml"
+    return require_fictional(load_yaml(business), business)["reply_from"]
+
+
+add_approval_commands(
+    app,
+    open_queue=lambda: Queue(state.db),
+    make_sender=lambda name: make_sender(name, outbox=ROOT / "outbox"),
+    reply_from=reply_from,
+)
+
+
+def main() -> None:
+    app()

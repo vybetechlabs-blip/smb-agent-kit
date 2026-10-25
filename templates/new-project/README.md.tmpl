@@ -1,0 +1,41 @@
+# {{name}}
+
+[![CI](https://github.com/vybetechlabs-blip/{{name}}/actions/workflows/ci.yml/badge.svg)](https://github.com/vybetechlabs-blip/{{name}}/actions/workflows/ci.yml)
+
+**Status: <<FILL: Active or Complete, the current phase, what is pending>>.**
+
+## Problem and result
+<<FILL: the problem in two or three plain sentences, then the result with numbers that trace to eval/REPORT.md. Why you built it, what you learned, what it proves.>>
+
+The business in `business/` is fictional and every sample in `inbox/` is synthetic.
+
+### How it works
+<<FILL: the pipeline from input to approved draft, as a short diagram or list. Built on smb-agent-kit: approval queue, idempotent sending, LLM providers, eval runs.>>
+
+### The approval boundary
+- `send` refuses any draft that is not `approved` or `edited`; an edit counts as approval.
+- The send log is keyed by item id and draft version. A second send of the same key is refused with an error (exit code 3); it is never skipped silently.
+- Every transition is logged with a timestamp and an actor.
+
+## Decision log
+**1. <<FILL: decision>>.**
+Chosen: <<FILL: what was chosen and the evidence>>.
+Rejected: <<FILL: the alternative and why>>.
+
+## How AI was used
+<<FILL: the owner writes this section. Do not draft it.>>
+
+## Run it locally
+You need Python 3.11 or newer and [uv](https://docs.astral.sh/uv/).
+
+```powershell
+uv sync
+uv run pytest
+uv run ruff check . ; uv run ruff format --check .
+uv run {{name}} list
+```
+
+License: MIT, see [LICENSE](LICENSE). The business and all samples are fictional; any resemblance to real companies or people is coincidental.
+
+## Status
+**Status: <<FILL: same as the line at the top>>.**
