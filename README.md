@@ -5,9 +5,11 @@
 **Status: Active, v0.1.0 in progress, public release pending.**
 
 ## Problem and result
-Small-business agents tend to share one shape: read something in, extract or classify it, decide, draft a reply, wait for a person to approve it, send it, log every step, and measure the whole thing against a golden set. Building the approval queue, the send log, the model providers and the eval runner again for every agent is where most of the time goes. This kit is a proof of concept that lifts those parts out of one working agent, [enquiry-to-quote](https://github.com/vybetechlabs-blip/enquiry-to-quote), so the next agent starts at "write the extractor and the decision rule".
+Small-business agents tend to share one shape: read something in, extract or classify it, decide, draft a reply, wait for a person to approve it, send it, log every step, and measure the whole thing against a golden set. Building the approval queue, the send log, the model providers and the eval runner again for every agent is where most of the time goes. This kit is a proof of concept that lifts those parts out of one working agent, [`enquiry-to-quote`](https://github.com/vybetechlabs-blip/enquiry-to-quote), so the next agent starts at "write the extractor and the decision rule".
 
 The kit has 36 tests, and they run without any API key or network. A generator turns out a new project that installs, passes its stub tests and lints clean. CI runs that generator smoke test on every push.
+
+`enquiry-to-quote` runs on this kit with no change in behavior. On its `refactor/use-kit` branch, its 119 tests pass unchanged. Its eval report and all 42 saved run files come out byte-identical to `main` after re-scoring from saved outputs, with no model calls. Both of its CLI refusals (an unapproved send, then a repeat send) reproduce with the same messages and exit codes.
 
 ### How it works
 ```
@@ -32,7 +34,7 @@ A project keeps its own extractor, decision rule, drafts, golden sets and measur
 
 ## Decision log
 **1. Extract from one working agent, not design in the abstract.**
-Chosen: every module here already existed and was measured in enquiry-to-quote before it moved. A unit with only one user stays in that project; for example, enquiry-to-quote's extractor cross-check and its cover-note number check.
+Chosen: every module here already existed and was measured in `enquiry-to-quote` before it moved. A unit with only one user stays in that project; for example, `enquiry-to-quote`'s extractor cross-check and its cover-note number check.
 Rejected: a framework designed ahead of its users, with plugin registries or a scheduler.
 
 **2. Projects depend on a pinned git tag.**
@@ -66,7 +68,7 @@ uv run python scripts/new_project.py my-agent --dest ..  # a new project, pinned
 
 `--kit-path <kit checkout>` points a generated project at a local kit instead of the tag, which is how CI tests the generator.
 
-License: MIT, see [LICENSE](LICENSE).
+License: MIT, see [LICENSE](LICENSE). Projects made by the generator carry the same license.
 
 ## Status
 **Status: Active, v0.1.0 in progress, public release pending.** The test and lint commands are listed under Run it locally.
