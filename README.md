@@ -54,7 +54,7 @@ Chosen: the generator marks every part a person must write as `<<FILL: …>>`, i
 Rejected: plausible default text that passes review unread.
 
 ## How AI was used
-> **PLACEHOLDER: the owner writes this section.** It is deliberately not drafted. Leave this note in place until the owner's text replaces it.
+This kit is the part of enquiry-to-quote that every approval-gated agent needs, pulled out after that project worked rather than designed in the abstract. I wrote the brief with Claude and set the rules: nothing is abstracted until a real project has used it, the kit knows nothing about quotes or any other domain, and the first project moved onto it had to produce a byte-identical eval report before the release was tagged. Claude Code did the read-only inventory first, then the extraction, the generator and the tests, and it was Claude Code that flagged two things my brief had wrong: it pointed at a commit that predated most of the code worth extracting, and it assumed a public project could depend on a private kit. Making the kit public from its first release, pinning it by git tag, keeping the fictional-data check as a required field and the pass condition were my calls. The refactor was verified by re-scoring 22 saved evaluation runs with no model calls; the report and all 42 run files came out unchanged.
 
 ## Run it locally
 You need Python 3.11 or newer and [uv](https://docs.astral.sh/uv/). These commands are for PowerShell; they also work in bash.
